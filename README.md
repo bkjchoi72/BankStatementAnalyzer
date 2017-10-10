@@ -1,1 +1,1 @@
-# BankStatementAnalyzer
+# Spending Tracker
