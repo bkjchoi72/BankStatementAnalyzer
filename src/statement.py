@@ -9,5 +9,5 @@ class Statement(object):
         self.loaded_csv = pandas.read_csv(path_to_csv_file)
 
     def get_first_5_rows_of_csv(self):
-        print self.loaded_csv.head()
+        return self.loaded_csv.head()
 
