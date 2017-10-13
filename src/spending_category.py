@@ -13,9 +13,12 @@ class SpendingCategory(object):
     def __init__(self):
         self.categories = [category for category in Spending]
 
-    def categorize_row_by_description(self, description, date):
-        print '\nWhich category does "{} - {}" belong to?'.format(description, date)
+    def categorize_row_by_description(self, amount, date, description):
+        print '\n----------------------------------------------------------------------'
+        print 'You spent ${} on {} for "{}"\n'.format(amount, date, description)
+        print 'Which category does this belong to?'
         print '(Default value is OTHER)'
+        print '----------------------------------------------------------------------'
         self._print_options()
 
         user_input = raw_input('Enter (ex. 1): ')

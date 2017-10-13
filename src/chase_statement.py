@@ -19,8 +19,9 @@ class ChaseStatement(Statement):
         row_tuples = []
         spending_category = SpendingCategory()
         for i, row in rows.iterrows():
-            chosen_category = spending_category.categorize_row_by_description(row[KEY_DESCRIPTION],
-                                                                              row[KEY_TRANSACTION_DATE])
+            chosen_category = spending_category.categorize_row_by_description(row[KEY_AMOUNT],
+                                                                              row[KEY_TRANSACTION_DATE],
+                                                                              row[KEY_DESCRIPTION])
             row_tuples.append((row, chosen_category))
 
         return row_tuples
