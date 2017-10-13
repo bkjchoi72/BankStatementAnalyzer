@@ -5,30 +5,37 @@ from src.enumeration.main_menu import MainMenu
 from src.enumeration.bank import Bank
 from src.factory.statement_factory import StatementFactory
 from src.exception.app_exceptions import CsvFileNotSelected, MainMenuInputOutOfRange
+from src.spending_category import SpendingCategoryOutOfRange, SpendingCategoryValueNotFound
 
 
 def main_application():
     print_introduction()
-    main_option = get_input_from_main_menu()
-    while main_option != MainMenu.EXIT:
+    while True:
         try:
-            if main_option == MainMenu.OPEN_CHASE_CSV_FILE:
+            statement = None
+            main_option = get_input_from_main_menu()
+            if main_option == MainMenu.OPEN_CHASE_CSV_FILE.value:
                 path_to_csv_file = get_path_to_csv_file_from_user()
                 statement = StatementFactory.make_statement(Bank.CHASE, path_to_csv_file)
-                first_five_rows = statement.get_first_5_rows_of_csv()
-                for index, row in first_five_rows.iterrows():
-                    for column in row:
-                        print column
-                print first_five_rows
-            elif main_option == MainMenu.OPEN_CITI_CSV_FILE:
+            elif main_option == MainMenu.OPEN_CITI_CSV_FILE.value:
                 path_to_csv_file = get_path_to_csv_file_from_user()
                 statement = StatementFactory.make_statement(Bank.CITI, path_to_csv_file)
+            elif main_option == MainMenu.EXIT.value:
+                break
+
+            month = int(raw_input('Enter month: (ex. 5) '))
+            year = int(raw_input('Enter year: (ex 2017) '))
+            rows = statement.get_rows_for_the_month(month, year)
+            row_spending_tuples = statement.categorize_each_row_in_dataframe(rows)
+            spending_report = statement.get_sum_of_spending_in_each_category(row_spending_tuples)
+
+            print '\n SUMMARY: '
+            print spending_report
+
         except CsvFileNotSelected:
             pass
-        except (ValueError, MainMenuInputOutOfRange):
-            print 'Please choose a valid option'
-
-        main_option = get_input_from_main_menu()
+        except (ValueError, MainMenuInputOutOfRange, SpendingCategoryOutOfRange, SpendingCategoryValueNotFound):
+            print '\n ERROR: Invalid option'
 
 
 def print_introduction():

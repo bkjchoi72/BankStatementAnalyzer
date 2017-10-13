@@ -11,3 +11,16 @@ class Statement(object):
     def get_first_5_rows_of_csv(self):
         return self.loaded_csv.head()
 
+    @abstractmethod
+    def get_rows_for_the_month(self, month, year):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def categorize_each_row_in_dataframe(rows):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def get_sum_of_spending_in_each_category(row_spending_tuples):
+        pass
