@@ -13,8 +13,8 @@ class SpendingCategory(object):
     def __init__(self):
         self.categories = [category for category in Spending]
 
-    def categorize_row_by_description(self, description):
-        print 'Which category does "{}" belong to?'.format(description)
+    def categorize_row_by_description(self, description, date):
+        print '\nWhich category does "{} - {}" belong to?'.format(description, date)
         print '(Default value is OTHER)'
         self._print_options()
 

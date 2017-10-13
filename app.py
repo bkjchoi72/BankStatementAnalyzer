@@ -23,7 +23,7 @@ def main_application():
             elif main_option == MainMenu.EXIT.value:
                 break
 
-            month = int(raw_input('Enter month: (ex. 5) '))
+            month = int(raw_input('\nWhich month would you like to analyze? : (ex. 5) '))
             year = int(raw_input('Enter year: (ex 2017) '))
             rows = statement.get_rows_for_the_month(month, year)
             row_spending_tuples = statement.categorize_each_row_in_dataframe(rows)

@@ -19,7 +19,8 @@ class ChaseStatement(Statement):
         row_tuples = []
         spending_category = SpendingCategory()
         for i, row in rows.iterrows():
-            chosen_category = spending_category.categorize_row_by_description(row[KEY_DESCRIPTION])
+            chosen_category = spending_category.categorize_row_by_description(row[KEY_DESCRIPTION],
+                                                                              row[KEY_TRANSACTION_DATE])
             row_tuples.append((row, chosen_category))
 
         return row_tuples
@@ -51,4 +52,4 @@ class ChaseStatement(Statement):
         date_filter = self.loaded_csv[KEY_TRANSACTION_DATE].isin(valid_dates)
         spending_filter = self.loaded_csv[KEY_AMOUNT] < 0
 
-        return self.loaded_csv[date_filter & spending_filter]
+        return self.loaded_csv[date_filter & spending_filter].sort_values(KEY_TRANSACTION_DATE)

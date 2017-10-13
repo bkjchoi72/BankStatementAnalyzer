@@ -8,9 +8,6 @@ class Statement(object):
     def __init__(self, path_to_csv_file):
         self.loaded_csv = pandas.read_csv(path_to_csv_file)
 
-    def get_first_5_rows_of_csv(self):
-        return self.loaded_csv.head()
-
     @abstractmethod
     def get_rows_for_the_month(self, month, year):
         pass
