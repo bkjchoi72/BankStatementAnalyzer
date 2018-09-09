@@ -12,13 +12,14 @@ KEY_AMOUNT = 'Amount'
 class ChaseStatement(Statement):
     def __init__(self, path_to_csv_file):
         super(ChaseStatement, self).__init__(path_to_csv_file)
-        self.loaded_csv[KEY_AMOUNT] = self.loaded_csv[KEY_AMOUNT].astype(float).fillna(0.0)
+        self._sort_rows_by(key=KEY_TRANSACTION_DATE)
+        # self.rows[KEY_AMOUNT] = self.rows[KEY_AMOUNT].astype(float).fillna(0.0)
 
     @staticmethod
-    def categorize_each_row_in_dataframe(rows):
+    def categorize_each_row(rows):
         row_tuples = []
         spending_category = SpendingCategory()
-        for i, row in rows.iterrows():
+        for row in rows:
             chosen_category = spending_category.categorize_row_by_description(row[KEY_AMOUNT],
                                                                               row[KEY_TRANSACTION_DATE],
                                                                               row[KEY_DESCRIPTION])
@@ -31,7 +32,7 @@ class ChaseStatement(Statement):
         start_date_str = '{}/1/{}'.format(month, year)
         end_date_str = '{}/{}/{}'.format(month, number_of_days, year)
 
-        return self._get_rows_between_start_date_inclusive_and_end_date_inclusive(start_date_str, end_date_str)
+        return self._filter_rows_by_date(start_date_str, end_date_str)
 
     @staticmethod
     def get_sum_of_spending_in_each_category(row_spending_tuples):
@@ -44,13 +45,26 @@ class ChaseStatement(Statement):
 
         return spending_summary
 
-    def _get_rows_between_start_date_inclusive_and_end_date_inclusive(self, start_date_str, end_date_str):
-        start_date = datetime.strptime(start_date_str, '%m/%d/%Y')
-        end_date = datetime.strptime(end_date_str, '%m/%d/%Y')
+    def _filter_rows_by_date(self, start_date_str_inclusive, end_date_str_inclusive):
+        start_date = datetime.strptime(start_date_str_inclusive, '%m/%d/%Y')
+        end_date = datetime.strptime(end_date_str_inclusive, '%m/%d/%Y')
         number_of_days = (end_date - start_date).days
         valid_dates = [(start_date + timedelta(days=x)).strftime('%m/%d/%Y') for x in range(number_of_days + 1)]
 
-        date_filter = self.loaded_csv[KEY_TRANSACTION_DATE].isin(valid_dates)
-        spending_filter = self.loaded_csv[KEY_AMOUNT] < 0
+        filtered_rows = []
+        for row in self.rows:
+            if row[KEY_TRANSACTION_DATE] in valid_dates:
+                filtered_rows.append(row)
 
-        return self.loaded_csv[date_filter & spending_filter].sort_values(KEY_TRANSACTION_DATE)
+        return filtered_rows
+
+    def _filter_rows_by_amount(self, minimum_inclusive=float('-inf'), maximum_inclusive=float('inf')):
+        filtered_rows = []
+        for row in self.rows:
+            if minimum_inclusive <= row[KEY_AMOUNT] <= maximum_inclusive:
+                filtered_rows.append(row[KEY_AMOUNT])
+
+        return filtered_rows
+
+    def _sort_rows_by(self, key):
+        self.rows = sorted(self.rows, key=lambda row: row[key])
