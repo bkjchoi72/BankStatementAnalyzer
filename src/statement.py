@@ -13,7 +13,7 @@ class Statement(ABC):
         self.transactions = self._read_transactions_from_csv_file(path_to_csv_file)
 
     @abstractmethod
-    def get_transactions_for_the_month(self, month, year):
+    def get_spendings_for_the_month(self, month, year):
         pass
 
     @staticmethod

@@ -25,7 +25,7 @@ class ChaseStatement(Statement):
 
         return transactions
 
-    def get_transactions_for_the_month(self, month, year):
+    def get_spendings_for_the_month(self, month, year):
         weekday_of_first_day, number_of_days = calendar.monthrange(int(year), int(month))
         start_date_str = '{}/1/{}'.format(month, year)
         end_date_str = '{}/{}/{}'.format(month, number_of_days, year)
