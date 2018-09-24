@@ -24,9 +24,9 @@ def main_application():
 
             month = int(input('\nWhich month would you like to analyze? : (ex. 5) '))
             year = int(input('Enter year: (ex 2018) '))
-            rows = statement.get_rows_for_the_month(month, year)
-            row_spending_tuples = statement.categorize_each_row(rows)
-            spending_report = statement.get_sum_of_spending_in_each_category(row_spending_tuples)
+            transactions = statement.get_transactions_for_the_month(month, year)
+            statement.categorize_each_transaction(transactions)
+            spending_report = statement.get_sum_of_spending_in_each_category(transactions)
 
             print('\n SUMMARY: ')
             print(spending_report)

@@ -3,75 +3,75 @@ from unittest.mock import patch
 import pytest
 import csv
 
-from src.chase_statement import ChaseStatement, KEY_TRANSACTION_DATE, KEY_AMOUNT
+from src.chase_statement import ChaseStatement
 
 
 @pytest.fixture
-@patch('src.statement.Statement._read_rows_from_csv_file', lambda *args, **kwargs: None)
-@patch('src.chase_statement.ChaseStatement._sort_rows_by', lambda *args, **kwargs: None)
+@patch('src.statement.Statement._read_transactions_from_csv_file', lambda *args, **kwargs: None)
+@patch('src.chase_statement.ChaseStatement._sort_transactions_by', lambda *args, **kwargs: None)
 def chase_statement():
     chase_statement = ChaseStatement(path_to_csv_file='_')
     from collections import OrderedDict
-    chase_statement.rows = [OrderedDict([('Type', 'Sale'),
-                                        ('Trans Date', '01/01/2017'),
-                                        ('Post Date', '01/02/2017'),
-                                        ('Description', 'description 1'),
-                                        ('Amount', '-01.01')]),
-                            OrderedDict([('Type', 'Sale'),
+    chase_statement.transactions = [OrderedDict([('Type', 'Sale'),
+                                                 ('Trans Date', '01/01/2017'),
+                                                 ('Post Date', '01/02/2017'),
+                                                 ('Description', 'description 1'),
+                                                 ('Amount', '-01.01')]),
+                                    OrderedDict([('Type', 'Sale'),
                                          ('Trans Date', '01/02/2017'),
                                          ('Post Date', '01/02/2017'),
                                          ('Description', 'description 2'),
                                          ('Amount', '-01.02')]),
-                            OrderedDict([('Type', 'Sale'),
+                                    OrderedDict([('Type', 'Sale'),
                                          ('Trans Date', '01/03/2017'),
                                          ('Post Date', '01/04/2017'),
                                          ('Description', 'description 3'),
                                          ('Amount', '-01.03')]),
-                            OrderedDict([('Type', 'Sale'),
+                                    OrderedDict([('Type', 'Sale'),
                                          ('Trans Date', '01/04/2017'),
                                          ('Post Date', '01/06/2017'),
                                          ('Description', 'description 4'),
                                          ('Amount', '-01.04')]),
-                            OrderedDict([('Type', 'Sale'),
+                                    OrderedDict([('Type', 'Sale'),
                                          ('Trans Date', '01/05/2017'),
                                          ('Post Date', '01/06/2017'),
                                          ('Description', 'description 5'),
                                          ('Amount', '-01.05')]),
-                            OrderedDict([('Type', 'Sale'),
+                                    OrderedDict([('Type', 'Sale'),
                                          ('Trans Date', '01/06/2017'),
                                          ('Post Date', '01/06/2017'),
                                          ('Description', 'description 6'),
                                          ('Amount', '-01.06')])
-                            ]
+                                    ]
     return chase_statement
 
 
 def test_dates_between_01_02_2017_to_01_04_2017_returns_3_rows(chase_statement):
-    rows = chase_statement._filter_rows_by_date(start_date_str_inclusive='01/02/2017',
-                                                end_date_str_inclusive='01/04/2017')
+    rows = chase_statement._filter_transactions_by_date(self.transaction, start_date_str_inclusive='01/02/2017',
+                                                        end_date_str_inclusive='01/04/2017')
     assert 3, len(rows)
 
 
 def test_dates_out_of_range_returns_0_rows(chase_statement):
-    rows = chase_statement._filter_rows_by_date(start_date_str_inclusive='02/01/2017',
-                                                end_date_str_inclusive='02/02/2017')
+    rows = chase_statement._filter_transactions_by_date(self.transaction, start_date_str_inclusive='02/01/2017',
+                                                        end_date_str_inclusive='02/02/2017')
     assert 0 == len(rows)
 
 
 def test_same_start_date_and_end_date_returns_1_row(chase_statement):
-    rows = chase_statement._filter_rows_by_date(start_date_str_inclusive='01/01/2017',
-                                                end_date_str_inclusive='01/01/2017')
+    rows = chase_statement._filter_transactions_by_date(self.transaction, start_date_str_inclusive='01/01/2017',
+                                                        end_date_str_inclusive='01/01/2017')
     assert 1 == len(rows)
 
 
 def test_range_from_2015_to_2020_returns_6_rows(chase_statement):
-    rows = chase_statement._filter_rows_by_date(start_date_str_inclusive='01/01/2015',
-                                                end_date_str_inclusive='12/31/2020')
+    rows = chase_statement._filter_transactions_by_date(self.transaction, start_date_str_inclusive='01/01/2015',
+                                                        end_date_str_inclusive='12/31/2020')
     assert 6 == len(rows)
 
 
 def test_january_returns_6_rows(chase_statement):
-    rows = chase_statement.get_rows_for_the_month(month='1', year='2017')
+    rows = chase_statement.get_transactions_for_the_month(month='1', year='2017')
     assert 6 == len(rows)
 
 
